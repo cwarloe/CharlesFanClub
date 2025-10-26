@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charles Fan Club Poll</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Black', Arial, sans-serif;
+            background: linear-gradient(135deg, #2c5aa0 0%, #1a3d7a 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: #2c5aa0;
+            border: 8px solid #f4c430;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 6px solid #f4c430;
+            margin: 0 auto 20px;
+            display: block;
+            background: white;
+        }
+
+        h1 {
+            color: #f4c430;
+            font-size: 2.5em;
+            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .tagline {
+            color: #f4c430;
+            font-size: 1.2em;
+            font-style: italic;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .divider {
+            height: 4px;
+            background: #f4c430;
+            margin: 30px 0;
+            border-radius: 2px;
+        }
+
+        .poll-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            border: 3px solid #f4c430;
+        }
+
+        h2 {
+            color: #f4c430;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            color: #f4c430;
+            font-size: 1.1em;
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 1em;
+            border: 3px solid #f4c430;
+            border-radius: 8px;
+            background: white;
+            color: #2c5aa0;
+            font-weight: bold;
+        }
+
+        .candidates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .candidate-option {
+            background: rgba(255, 255, 255, 0.2);
+            border: 3px solid #f4c430;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .candidate-option:hover {
+            background: rgba(244, 196, 48, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .candidate-option.selected {
+            background: #f4c430;
+            border-color: white;
+        }
+
+        .candidate-option input[type="checkbox"] {
+            display: none;
+        }
+
+        .candidate-option label {
+            color: #f4c430;
+            cursor: pointer;
+            margin: 0;
+            font-size: 1.1em;
+        }
+
+        .candidate-option.selected label {
+            color: #2c5aa0;
+        }
+
+        .vote-button {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.3em;
+            font-weight: bold;
+            background: #f4c430;
+            color: #2c5aa0;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .vote-button:hover {
+            background: #ffd700;
+            transform: scale(1.05);
+        }
+
+        .vote-button:disabled {
+            background: #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        .message.success {
+            background: #4CAF50;
+            color: white;
+            display: block;
+        }
+
+        .message.error {
+            background: #f44336;
+            color: white;
+            display: block;
+        }
+
+        .results-section {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        .result-item {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #f4c430;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-name {
+            color: #f4c430;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .result-votes {
+            background: #f4c430;
+            color: #2c5aa0;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .view-results-button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1em;
+            font-weight: bold;
+            background: rgba(244, 196, 48, 0.3);
+            color: #f4c430;
+            border: 3px solid #f4c430;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .view-results-button:hover {
+            background: rgba(244, 196, 48, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- TO ADD YOUR IMAGE: Replace YOUR_IMAGE_URL_HERE with your image URL -->
+            <img src="YOUR_IMAGE_URL_HERE" alt="Charles" class="profile-image">
+            <h1>CHARLES FAN CLUB</h1>
+            <p class="tagline">For Friendship. For Service.</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="poll-section">
+            <h2>Vote for Two Candidates</h2>
+            
+            <form id="pollForm">
+                <div class="form-group">
+                    <label for="voterName">Your Name:</label>
+                    <input type="text" id="voterName" name="voterName" required placeholder="Enter your name">
+                </div>
+
+                <div class="form-group">
+                    <label>Select Two Candidates:</label>
+                    <div class="candidates-grid">
+                        <div class="candidate-option" data-candidate="Laeith">
+                            <input type="checkbox" id="candidate-laeith" value="Laeith">
+                            <label for="candidate-laeith">Laeith</label>
+                        </div>
+                        <div class="candidate-option" data-candidate="Hudson">
+                            <input type="checkbox" id="candidate-hudson" value="Hudson">
+                            <label for="candidate-hudson">Hudson</label>
+                        </div>
+                        <div class="candidate-option" data-candidate="Gideon">
+                            <input type="checkbox" id="candidate-gideon" value="Gideon">
+                            <label for="candidate-gideon">Gideon</label>
+                        </div>
+                        <div class="candidate-option" data-candidate="Sam">
+                            <input type="checkbox" id="candidate-sam" value="Sam">
+                            <label for="candidate-sam">Sam</label>
+                        </div>
+                        <div class="candidate-option" data-candidate="Elijah">
+                            <input type="checkbox" id="candidate-elijah" value="Elijah">
+                            <label for="candidate-elijah">Elijah</label>
+                        </div>
+                        <div class="candidate-option" data-candidate="Titus">
+                            <input type="checkbox" id="candidate-titus" value="Titus">
+                            <label for="candidate-titus">Titus</label>
+                        </div>
+                        <div class="candidate-option" data-candidate="Malachi">
+                            <input type="checkbox" id="candidate-malachi" value="Malachi">
+                            <label for="candidate-malachi">Malachi</label>
+                        </div>
+                        <div class="candidate-option" data-candidate="Anders">
+                            <input type="checkbox" id="candidate-anders" value="Anders">
+                            <label for="candidate-anders">Anders</label>
+                        </div>
+                        <div class="candidate-option" data-candidate="Liam">
+                            <input type="checkbox" id="candidate-liam" value="Liam">
+                            <label for="candidate-liam">Liam</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="vote-button" id="voteButton">Submit Vote</button>
+            </form>
+
+            <div class="message" id="message"></div>
+
+            <button class="view-results-button" id="viewResultsButton">View Results</button>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="divider"></div>
+            <h2>Current Results</h2>
+            <div id="resultsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // STEP 1: REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT URL
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQN4ul8DjaxM4wsa2V9nUHCKU_SxTHIaq_rkOxVDM/dev';
+
+        // Handle candidate selection
+        const candidateOptions = document.querySelectorAll('.candidate-option');
+        const checkboxes = document.querySelectorAll('.candidate-option input[type="checkbox"]');
+
+        candidateOptions.forEach(option => {
+            option.addEventListener('click', function(e) {
+                if (e.target.tagName !== 'INPUT') {
+                    const checkbox = this.querySelector('input[type="checkbox"]');
+                    const checkedCount = document.querySelectorAll('.candidate-option input[type="checkbox"]:checked').length;
+                    
+                    if (!checkbox.checked && checkedCount >= 2) {
+                        showMessage('You can only select 2 candidates', 'error');
+                        return;
+                    }
+                    
+                    checkbox.checked = !checkbox.checked;
+                    this.classList.toggle('selected', checkbox.checked);
+                }
+            });
+        });
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const checkedCount = document.querySelectorAll('.candidate-option input[type="checkbox"]:checked').length;
+                const parent = this.closest('.candidate-option');
+                
+                if (this.checked && checkedCount > 2) {
+                    this.checked = false;
+                    showMessage('You can only select 2 candidates', 'error');
+                } else {
+                    parent.classList.toggle('selected', this.checked);
+                }
+            });
+        });
+
+        // Handle form submission
+        document.getElementById('pollForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const voterName = document.getElementById('voterName').value.trim();
+            const selectedCandidates = Array.from(document.querySelectorAll('.candidate-option input[type="checkbox"]:checked'))
+                .map(cb => cb.value);
+            
+            if (!voterName) {
+                showMessage('Please enter your name', 'error');
+                return;
+            }
+            
+            if (selectedCandidates.length !== 2) {
+                showMessage('Please select exactly 2 candidates', 'error');
+                return;
+            }
+            
+            const voteButton = document.getElementById('voteButton');
+            voteButton.disabled = true;
+            voteButton.textContent = 'Submitting...';
+            
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'vote',
+                        voterName: voterName,
+                        candidates: selectedCandidates
+                    })
+                });
+                
+                showMessage('Vote submitted successfully!', 'success');
+                document.getElementById('pollForm').reset();
+                candidateOptions.forEach(option => option.classList.remove('selected'));
+                
+                setTimeout(() => {
+                    loadResults();
+                    document.getElementById('resultsSection').classList.add('show');
+                }, 1000);
+                
+            } catch (error) {
+                showMessage('Error submitting vote. Please try again.', 'error');
+                console.error('Error:', error);
+            } finally {
+                voteButton.disabled = false;
+                voteButton.textContent = 'Submit Vote';
+            }
+        });
+
+        // View results button
+        document.getElementById('viewResultsButton').addEventListener('click', function() {
+            loadResults();
+            document.getElementById('resultsSection').classList.add('show');
+        });
+
+        // Load results from Google Sheets
+        async function loadResults() {
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL + '?action=results');
+                const data = await response.json();
+                
+                displayResults(data.results);
+            } catch (error) {
+                console.error('Error loading results:', error);
+                showMessage('Error loading results', 'error');
+            }
+        }
+
+        // Display results
+        function displayResults(results) {
+            const container = document.getElementById('resultsContainer');
+            
+            const sortedResults = Object.entries(results)
+                .sort((a, b) => b[1] - a[1]);
+            
+            container.innerHTML = sortedResults.map(([candidate, votes]) => `
+                <div class="result-item">
+                    <span class="result-name">${candidate}</span>
+                    <span class="result-votes">${votes} vote${votes !== 1 ? 's' : ''}</span>
+                </div>
+            `).join('');
+        }
+
+        // Show message
+        function showMessage(text, type) {
+            const message = document.getElementById('message');
+            message.textContent = text;
+            message.className = 'message ' + type;
+            
+            setTimeout(() => {
+                message.style.display = 'none';
+            }, 3000);
+        }
+
+        // Auto-load results on page load
+        loadResults();
+    </script>
+</body>
+</html>
