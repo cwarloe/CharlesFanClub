@@ -3,7 +3,9 @@
  *
  * SETUP
  * 1. Create a Google Sheet, then Extensions > Apps Script, and paste this file.
- *    (The script is container-bound, so it uses the sheet it lives in.)
+ *    Copy the sheet ID from its URL (docs.google.com/spreadsheets/d/<ID>/edit)
+ *    and set SPREADSHEET_ID below. Web-app requests may not have an "active"
+ *    spreadsheet, so the script opens it explicitly by ID.
  * 2. Deploy > New deployment > type "Web app".
  *      Execute as: Me
  *      Who has access: Anyone
@@ -22,11 +24,15 @@
  */
 
 var CANDIDATES = ['Laeith', 'Hudson', 'Gideon', 'Sam', 'Elijah', 'Titus', 'Malachi', 'Anders', 'Liam'];
+var SPREADSHEET_ID = ''; // REQUIRED for the deployed web app: paste your sheet ID here
 var SHEET_NAME = 'Votes';
 var HEADERS = ['Timestamp', 'Voter', 'Candidate 1', 'Candidate 2'];
 
 function getSheet_() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  // Prefer the explicit ID; fall back to the bound sheet (editor runs/tests only).
+  var ss = SPREADSHEET_ID
+    ? SpreadsheetApp.openById(SPREADSHEET_ID)
+    : SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
