@@ -324,6 +324,7 @@
             <div class="message" id="message"></div>
 
             <button class="view-results-button" id="viewResultsButton">View Results</button>
+            <button class="view-results-button" id="revoteButton" style="display: none;">Didn't go through? Vote again</button>
         </div>
 
         <div class="results-section" id="resultsSection">
@@ -537,7 +538,30 @@
             const voteButton = document.getElementById('voteButton');
             voteButton.disabled = true;
             voteButton.textContent = 'Already Voted';
+            document.getElementById('revoteButton').style.display = 'block';
         }
+
+        // Recovery path: the no-cors request can't confirm the vote was recorded,
+        // so let the visitor clear the local lock and try again.
+        function unlockForm() {
+            try {
+                localStorage.removeItem(VOTED_KEY);
+                localStorage.removeItem(VOTER_NAME_KEY);
+            } catch (e) {}
+            document.getElementById('voterName').disabled = false;
+            checkboxes.forEach(cb => { cb.disabled = false; });
+            candidateOptions.forEach(option => {
+                option.style.pointerEvents = '';
+                option.style.opacity = '';
+            });
+            const voteButton = document.getElementById('voteButton');
+            voteButton.disabled = false;
+            voteButton.textContent = 'Submit Vote';
+            document.getElementById('revoteButton').style.display = 'none';
+            showMessage('Form unlocked. You can vote again.', 'success');
+        }
+
+        document.getElementById('revoteButton').addEventListener('click', unlockForm);
 
         function checkPreviousVote() {
             if (!hasVoted()) return;
